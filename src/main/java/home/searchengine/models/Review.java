@@ -1,5 +1,6 @@
 package home.searchengine.models;
 
+// TODO: Add javadoc
 public class Review {
 
 	private String productId;
@@ -12,11 +13,43 @@ public class Review {
 
 	private float score;
 
-	private long time;	// Make it instant in future if any date operation is being performed on this
+	private long time;	// make it instant in future if any date operation is being performed on this
 
 	private String summary;
 
 	private String text;
+
+	public String getProductId() {
+		return productId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public String getProfileName() {
+		return profileName;
+	}
+
+	public String getHelpfulness() {
+		return helpfulness;
+	}
+
+	public float getScore() {
+		return score;
+	}
+
+	public long getTime() {
+		return time;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public String getText() {
+		return text;
+	}
 
 	public void setProductId(String productId) {
 		this.productId = productId;

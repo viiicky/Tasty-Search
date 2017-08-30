@@ -1,6 +1,7 @@
 package home.searchengine.util;
 
 public class ReaderUtil {
+
 	public static float parseFloat(String inputString){
 		if(inputString.contains("/")){
 			String[] ratio = inputString.split("/");
