@@ -54,15 +54,15 @@ public class IntermediateHashTableSearcher implements SearchService {
         Map<PartialReview, Integer> reviewRankTable = this.createReviewRankHashTable(searchTokens, indexMap, indexedReviews);
 
         // Uncomment while debugging. Not relying on log levels, commenting instead as it is inside a big loop
-        LOGGER.debug("Review Rank Table:");
-        reviewRankTable.forEach((k, v) -> LOGGER.debug("Review: {}, Rank: {}", k, v));
+        /*LOGGER.debug("Review Rank Table:");
+        reviewRankTable.forEach((k, v) -> LOGGER.debug("Review: {}, Rank: {}", k, v));*/
 
         // create intermediate hash table (just invert the above review-rank table to rank-review table)
         Map<Integer, Queue<PartialReview>> rankReviewTable = this.invertHashTable(reviewRankTable);
 
         // Uncomment while debugging. Not relying on log levels, commenting instead as it is inside a big loop
-        LOGGER.debug("Rank Review Table:");
-        rankReviewTable.forEach((k, v) -> LOGGER.debug("Rank: {}, Review: {}", k, v));
+        /*LOGGER.debug("Rank Review Table:");
+        rankReviewTable.forEach((k, v) -> LOGGER.debug("Rank: {}, Review: {}", k, v));*/
 
         // prepare the returning array (return top K result from rankReviewTable)
         return this.getTopKResults(rankReviewTable, this.numberOfReviewsToReturn, searchTokens.size(), indexedReviews);
