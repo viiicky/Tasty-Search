@@ -22,7 +22,6 @@ import java.util.List;
 public class IndexerRunner implements ApplicationRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IndexerRunner.class);
-    private final String filePath;
     private final int sampleSize;
     private final FileDataReader reader;
 
@@ -30,12 +29,10 @@ public class IndexerRunner implements ApplicationRunner {
 
     @Autowired
     public IndexerRunner(
-            @Value("${file-name}") final String filePath,
             @Value("${sample-size}") final int sampleSize,
             @Qualifier("textFileDataReader") final FileDataReader reader,
             @Qualifier("sequentialIndexer") final Indexer indexer) {
 
-        this.filePath = filePath;
         this.sampleSize = sampleSize;
         this.reader = reader;
         this.indexer = indexer;
@@ -49,10 +46,23 @@ public class IndexerRunner implements ApplicationRunner {
      */
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
+        if (!applicationArguments.containsOption("dataset")) {
+            throw new IllegalArgumentException("Please provide the file path using the argument 'dataset'");
+        }
+
+        List<String> filePath = applicationArguments.getOptionValues("dataset");
+        if (filePath.size() != 1) {
+            throw new IllegalArgumentException("Please provide exactly one value for the argument 'dataset'");
+        }
+
         // load data from file
         LOGGER.info("Reading review data from file. Please be patient...");
-        List<Review> reviewList = this.reader.deserializeData(this.filePath);
+        List<Review> reviewList = this.reader.deserializeData(filePath.get(0));
         LOGGER.info("Data reading finished successfully. Total Reviews: {}", reviewList.size());
+
+        if (this.sampleSize > reviewList.size()) {
+            throw new IllegalArgumentException("Sample size cannot be greater than population size.");
+        }
 
         // random sample
         LOGGER.info("Selecting a random sample of {} reviews.", this.sampleSize);
