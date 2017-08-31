@@ -1,4 +1,4 @@
-package home.searchengine.services;
+package home.searchengine.services.reader;
 
 import java.util.List;
 

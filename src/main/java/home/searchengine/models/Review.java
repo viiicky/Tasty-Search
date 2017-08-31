@@ -1,6 +1,5 @@
 package home.searchengine.models;
 
-// TODO: Add javadoc
 public class Review {
 
 	private String productId;
@@ -83,7 +82,6 @@ public class Review {
 		this.text = text;
 	}
 
-	// TODO: Remove this method once development is done
 	@Override
 	public String toString() {
 		return "Review{" +

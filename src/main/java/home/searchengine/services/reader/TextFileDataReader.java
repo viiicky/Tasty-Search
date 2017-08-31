@@ -1,4 +1,4 @@
-package home.searchengine.services;
+package home.searchengine.services.reader;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -6,8 +6,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import home.searchengine.models.Review;
 
+@Service
+@Qualifier("textFileDataReader")
 public class TextFileDataReader implements FileDataReader {
 
 	/**
@@ -49,7 +54,6 @@ public class TextFileDataReader implements FileDataReader {
 			e.printStackTrace();
 		}
 
-		System.out.println("Successfully read all reviews: " + reviewList.size());
 		return reviewList;
 	}
 }
