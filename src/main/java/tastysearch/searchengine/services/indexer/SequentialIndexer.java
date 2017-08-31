@@ -14,7 +14,7 @@ import java.util.*;
  * Note: Even this might be made as type agnostic, needs to think more on it.
  * <p>
  * TODO: Currently the requirement is to store the indexes in memory, in future DB can come into picture, at that
- * point of time we should interface the storing index code and accessing index code out of here to manage it better.
+ * point of time we should interface the storing and accessing index code out of here to manage it better.
  * <p>
  * TODO: Add a parallel indexer implementation of {@link Indexer} in future and measure the performance of both.
  */
@@ -58,17 +58,7 @@ public class SequentialIndexer implements Indexer {
      */
     private void insertTokens(List<String> tokens, final int reviewId) {
         // when in DB, might need to use a separate column/field to maintain review id, here array index is sufficient
-        tokens.forEach(t -> {
-            t = t.trim().toLowerCase();
-            Set<Integer> postingSet = this.indexMap.get(t);
-            if (postingSet == null) {
-                postingSet = new HashSet<>();
-                postingSet.add(reviewId);
-                this.indexMap.put(t, postingSet);
-            } else {
-                postingSet.add(reviewId);
-            }
-        });
+        tokens.forEach(t -> this.indexMap.computeIfAbsent(t.trim(), k -> new HashSet<>()).add(reviewId));
     }
 
     @Override

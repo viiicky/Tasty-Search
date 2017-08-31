@@ -53,14 +53,14 @@ public class IntermediateHashTableSearcher implements SearchService {
         // prepare review-rank table
         Map<PartialReview, Integer> reviewRankTable = this.createReviewRankHashTable(searchTokens, indexMap, indexedReviews);
 
-        // Uncomment while debugging, not relying on log levels, commenting instead as it is inside a big loop
+        // Uncomment while debugging. Not relying on log levels, commenting instead as it is inside a big loop
         LOGGER.debug("Review Rank Table:");
         reviewRankTable.forEach((k, v) -> LOGGER.debug("Review: {}, Rank: {}", k, v));
 
         // create intermediate hash table (just invert the above review-rank table to rank-review table)
         Map<Integer, Queue<PartialReview>> rankReviewTable = this.invertHashTable(reviewRankTable);
 
-        // Uncomment while debugging, not relying on log levels, commenting instead as it is inside a big loop
+        // Uncomment while debugging. Not relying on log levels, commenting instead as it is inside a big loop
         LOGGER.debug("Rank Review Table:");
         rankReviewTable.forEach((k, v) -> LOGGER.debug("Rank: {}, Review: {}", k, v));
 
@@ -104,27 +104,16 @@ public class IntermediateHashTableSearcher implements SearchService {
      * @see Indexer#createIndexes()
      */
     private Map<PartialReview, Integer> createReviewRankHashTable(Collection<String> tokens,
-                                                                  Map<String, Set<Integer>> indexMap, Review[] actualReviews) {
+                                                                  Map<String, Set<Integer>> indexMap,
+                                                                  Review[] actualReviews) {
 
         Map<PartialReview, Integer> reviewRankTable = new HashMap<>();
         for (String token : tokens) {
-            String trimmedToken = token.trim().toLowerCase();
-
-            Set<Integer> postingSet = indexMap.get(trimmedToken);
-            if (postingSet == null) {    // if the input token doesn't exists in our system, just continue with next token
-                continue;
-            }
-            postingSet.forEach(reviewId -> {
+            Set<Integer> postingSet = indexMap.get(token.trim().toLowerCase());
+            Optional.ofNullable(postingSet).ifPresent(s -> s.forEach(reviewId -> {  // if the input token doesn't exists in our system, do nothing
                 PartialReview rank = new PartialReview(reviewId, actualReviews[reviewId].getScore());
-
-                if (reviewRankTable.get(rank) == null) {
-                    reviewRankTable.put(rank, 1);
-                } else {
-                    // In a given posting set no same reviews exists as its a set, thus control will not come
-                    // here more than once for a given posting set and a given review
-                    reviewRankTable.put(rank, reviewRankTable.get(rank) + 1);
-                }
-            });
+                reviewRankTable.merge(rank, 1, (a, b) -> a + b);    // in a given posting set no same reviews exists as its a set
+            }));
         }
         return reviewRankTable;
     }
@@ -182,34 +171,18 @@ public class IntermediateHashTableSearcher implements SearchService {
      * random order.
      *
      * @param inputTable input map to be inverted
-     * @return the new map which is an inversion of the input map
+     * @return the multi-value map which is an inversion of the input map
      * @see PriorityQueue
      * @see Comparable
      * @see PartialReview
      * @see PartialReview#score
      * <p>
      * Note: Think if this can be made type agnostic.
+     * TODO: Parallelize the inversion and measure performance
      */
     private Map<Integer, Queue<PartialReview>> invertHashTable(Map<PartialReview, Integer> inputTable) {
         Map<Integer, Queue<PartialReview>> outputTable = new HashMap<>();
-        for (Map.Entry<PartialReview, Integer> entry : inputTable.entrySet()) {
-            int score = entry.getValue();
-            PartialReview partialReview = entry.getKey();
-
-            Queue<PartialReview> partialReviewPriorityQueue = outputTable.containsKey(score) ? outputTable.get(score) : new PriorityQueue<>();
-            partialReviewPriorityQueue.add(partialReview);
-            outputTable.put(score, partialReviewPriorityQueue); // this is needed when a new queue is created
-
-            /*Queue<PartialReview> partialReviewPriorityQueue = outputTable.get(score);
-            if (partialReviewPriorityQueue == null) {
-                partialReviewPriorityQueue = new PriorityQueue<>();
-                partialReviewPriorityQueue.add(partialReview);
-                outputTable.put(score, partialReviewPriorityQueue);
-            } else {
-                partialReviewPriorityQueue.add(partialReview);
-            }*/
-        }
-
+        inputTable.forEach((k, v) -> outputTable.computeIfAbsent(v, PriorityQueue::new).add(k));
         return outputTable;
     }
 
@@ -237,12 +210,9 @@ public class IntermediateHashTableSearcher implements SearchService {
         int j = 0;
         for (int i = topKey; i > 0; i--) {
             Queue<PartialReview> partialReviewPriorityQueue = map.get(i);
-            if (partialReviewPriorityQueue == null) {
-                continue;
-            }
 
             // poll from priority queue to retrieve in order
-            while (!partialReviewPriorityQueue.isEmpty()) {
+            while (partialReviewPriorityQueue != null && !partialReviewPriorityQueue.isEmpty()) {
                 topKReviews[j] = actualReviews[partialReviewPriorityQueue.poll().getReviewId()];
                 j += 1;
                 if (j == k) {

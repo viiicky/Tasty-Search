@@ -11,7 +11,7 @@ import java.util.Set;
  * Note: This interface can be made type agnostic.
  * <p>
  * TODO: Currently the requirement is to store the indexes in memory, in future DB can come into picture, at that
- * point of time we should interface the storing index code and accessing index code out of here to manage it better.
+ * point of time we should interface the storing and accessing index code out of here to manage it better.
  */
 public interface Indexer {
 

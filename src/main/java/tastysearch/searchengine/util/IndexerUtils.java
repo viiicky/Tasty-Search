@@ -15,6 +15,7 @@ public class IndexerUtils {
 
     /**
      * Takes the input string and break them into words as per default locale.
+     * All the words are converted to a lower case string.
      *
      * @param inputString string to be broken
      * @return List of words
@@ -27,7 +28,7 @@ public class IndexerUtils {
 
         int start = iterator.first();
         for (int end = iterator.next(); end != BreakIterator.DONE; start = end, end = iterator.next()) {
-            tokens.add(inputString.substring(start, end));
+            tokens.add(inputString.substring(start, end).toLowerCase());
         }
 
         return tokens;
