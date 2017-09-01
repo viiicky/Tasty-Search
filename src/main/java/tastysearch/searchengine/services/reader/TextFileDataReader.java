@@ -1,7 +1,5 @@
 package tastysearch.searchengine.services.reader;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import tastysearch.searchengine.models.Review;
@@ -18,8 +16,6 @@ import java.util.List;
 @Qualifier("textFileDataReader")
 public class TextFileDataReader implements FileDataReader {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TextFileDataReader.class);
-
     /**
      * Reads file using {@link BufferedReader} and deserializes the data to a {@link List} of {@link Review}s
      *
@@ -27,7 +23,7 @@ public class TextFileDataReader implements FileDataReader {
      * @return list of reviews deserialized from file
      */
     @Override
-    public List<Review> deserializeData(String filePath) {
+    public List<Review> deserializeData(String filePath) throws IOException {
         List<Review> reviewList = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new java.io.FileReader(filePath))) {
@@ -51,8 +47,6 @@ public class TextFileDataReader implements FileDataReader {
 
                 reviewList.add(review);
             }
-        } catch (IOException e) {
-            LOGGER.error("Error while reading the file.", e);
         }
 
         return reviewList;
