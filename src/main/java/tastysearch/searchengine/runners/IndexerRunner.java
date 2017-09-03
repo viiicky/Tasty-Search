@@ -67,7 +67,7 @@ public class IndexerRunner implements ApplicationRunner {
         // random sample
         LOGGER.info("Selecting a random sample of {} reviews.", this.sampleSize);
         Collections.shuffle(reviewList);    // might pass a custom source of randomness for better shuffling if needed
-        // huge operation above, but as it is one timer, it should fine
+        // huge operation above, but as it is one timer, it should be fine
         final Review[] reviews = new Review[this.sampleSize];
         reviewList.subList(0, this.sampleSize).toArray(reviews);
         LOGGER.debug("{} reviews sampled: {}", reviews.length, reviews);

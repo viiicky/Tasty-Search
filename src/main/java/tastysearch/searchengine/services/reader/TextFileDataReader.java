@@ -30,18 +30,24 @@ public class TextFileDataReader implements FileDataReader {
             String line = reader.readLine();
             while (line != null) {
                 Review review = new Review();
-                review.setProductId(line.split(":\\s")[1]);
-                review.setUserId(reader.readLine().split(":\\s")[1]);
-                review.setProfileName(reader.readLine().split(":\\s")[1]);
-                String helpfulness = reader.readLine();
-                if (!helpfulness.contains(": ")) {    // as data file is malformed
-                    helpfulness = reader.readLine();
+                review.setProductId(line.substring(line.indexOf(" ")+1));
+                line = reader.readLine();
+                review.setUserId(line.substring(line.indexOf(" ")+1));
+                line = reader.readLine();
+                review.setProfileName(line.substring(line.indexOf(" ")+1));
+                line = reader.readLine();
+                if (!line.contains(": ")) {    // as data file is malformed for helpfulness field
+                    line = reader.readLine();
                 }
-                review.setHelpfulness(helpfulness.split(":\\s")[1]);
-                review.setScore(Float.parseFloat(reader.readLine().split(":\\s")[1]));
-                review.setTime(Long.parseLong(reader.readLine().split(":\\s")[1]));
-                review.setSummary(reader.readLine().split(":\\s")[1]);
-                review.setText(reader.readLine().split(":\\s")[1]);
+                review.setHelpfulness(line.substring(line.indexOf(" ")+1));
+                line = reader.readLine();
+                review.setScore(Float.parseFloat(line.substring(line.indexOf(" ")+1)));
+                line = reader.readLine();
+                review.setTime(Long.parseLong(line.substring(line.indexOf(" ")+1)));
+                line = reader.readLine();
+                review.setSummary(line.substring(line.indexOf(" ")+1));
+                line = reader.readLine();
+                review.setText(line.substring(line.indexOf(" ")+1));
                 reader.readLine();
                 line = reader.readLine();
 
