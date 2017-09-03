@@ -23,9 +23,7 @@ That's it. The application is now up and running
 * The service expects a `GET` request with search tokens passed in the query params. There is no limit on the number of search tokens.
 Say you want to search for good dog foods, just open any browser and hit: `localhost:8080/reviews?token1=good&token2=dog&token3=food`.
 This will fetch the top 20 highest scoring reviews.
-Response will be unstructured. To be able to read it copy the entire response in the textbox at https://jsonlint.com/ and click on Validate JSON button.
 
-* Alternatively, you can use Postman application to check the service out which provides easy option to pass query params and will show the response in a proper structure.
 Note that the token name can be anything i.e. if you want to search for quality cat foods, you can hit: `localhost:8080/reviews?t4=quality&t5=cat&t6=food`
 Notice `t`x instead of `token`x. Token name can be anything, only values matter. Just don't repeat a token in a single request.
 
