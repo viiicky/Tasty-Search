@@ -4,7 +4,7 @@ A search engine to search gourmet food reviews data and return the top K reviews
 have the highest overlap with the input query.
 
 ## What you’ll need to run this application:
-* Dataset: http://snap.stanford.edu/data/webFineFoods.html Alternate link: https://drive.google.com/file/d/0B8_VSW2-5XmpSTNlZXV4cVdLRUE/view
+* Dataset: http://snap.stanford.edu/data/web-FineFoods.html Alternate link: https://drive.google.com/file/d/0B8_VSW2-5XmpSTNlZXV4cVdLRUE/view
 * Maven 3.0+ to install dependencies required by application: https://maven.apache.org/download.cgi
 * Java to run the application: http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
