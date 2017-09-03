@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tastysearch.searchengine.models.Review;
 import tastysearch.searchengine.services.searcher.SearchService;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -38,7 +39,7 @@ public class SearchController {
      * @see SearchService#searchReviews
      */
     @RequestMapping(path = "/reviews", method = GET, produces = APPLICATION_JSON_VALUE)
-    public Review[] searchReviews(@RequestParam Map<String, String> params) {
+    public List<Review> searchReviews(@RequestParam Map<String, String> params) {
         LOGGER.debug("Query Params: {}", params);
         return this.searchService.searchReviews(params.values());
     }

@@ -46,7 +46,7 @@ public class IntermediateHashTableSearcher implements SearchService {
      * @return the searched reviews
      */
     @Override
-    public Review[] searchReviews(Collection<String> searchTokens) {
+    public List<Review> searchReviews(Collection<String> searchTokens) {
         Map<String, Set<Integer>> indexMap = this.indexer.getIndexMap();
         Review[] indexedReviews = this.indexer.getReviews();
 
@@ -205,17 +205,15 @@ public class IntermediateHashTableSearcher implements SearchService {
      * @param actualReviews the array containing all the {@link Review}s
      * @return selected reviews
      */
-    private Review[] getTopKResults(Map<Integer, Queue<PartialReview>> map, int k, int topKey, Review[] actualReviews) {
-        Review[] topKReviews = new Review[k];
-        int j = 0;
+    private List<Review> getTopKResults(Map<Integer, Queue<PartialReview>> map, int k, int topKey, Review[] actualReviews) {
+        List<Review> topKReviews = new ArrayList<>();
         for (int i = topKey; i > 0; i--) {
             Queue<PartialReview> partialReviewPriorityQueue = map.get(i);
 
             // poll from priority queue to retrieve in order
             while (partialReviewPriorityQueue != null && !partialReviewPriorityQueue.isEmpty()) {
-                topKReviews[j] = actualReviews[partialReviewPriorityQueue.poll().getReviewId()];
-                j += 1;
-                if (j == k) {
+                topKReviews.add(actualReviews[partialReviewPriorityQueue.poll().getReviewId()]);
+                if (topKReviews.size() == k) {
                     return topKReviews;
                 }
             }
